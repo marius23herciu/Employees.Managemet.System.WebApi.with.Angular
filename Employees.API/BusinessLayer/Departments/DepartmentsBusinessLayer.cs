@@ -2,6 +2,7 @@
 using Employees.API.DTOs;
 using Employees.API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Employees.API.BusinessLayer.Departments
 {
@@ -27,6 +28,17 @@ namespace Employees.API.BusinessLayer.Departments
                 departmentsDtos.Add(employeeDto);
             }
             return departmentsDtos;
+        }
+        public async Task<DepartmentDto> GetDepartment(string depName)
+        {
+            var department = await _context.Departments.Include(e => e.Employees).FirstOrDefaultAsync(n => n.Name == depName);
+            if (department == null)
+            {
+                return null;
+            }
+
+            var departmentsDto = _toDtos.DepartmentToDto(department).Result;
+            return departmentsDto;
         }
         public async Task<List<EmployeeByDepartmentDto>> GetEmployeesByDepartment(string depName)
         {
@@ -68,17 +80,23 @@ namespace Employees.API.BusinessLayer.Departments
 
         public async Task<DepartmentDto> ChangeName(string oldName, string newName)
         {
-            var checkDepartment = await _context.Departments.FirstOrDefaultAsync(n => n.Name == oldName);
-            if (checkDepartment == null)
+            var checkOldDepartment = await _context.Departments.Include(e => e.Employees).FirstOrDefaultAsync(n => n.Name == oldName);
+            if (checkOldDepartment == null)
             {
                 return null;
             }
 
-            checkDepartment.Name = newName;
+            var checkNewDepartment = await _context.Departments.Include(e => e.Employees).FirstOrDefaultAsync(n => n.Name == newName);
+            if (checkNewDepartment != null)
+            {
+                return null;
+            }
+
+            checkOldDepartment.Name = newName;
 
             await _context.SaveChangesAsync();
 
-            var departmentToDto = _toDtos.DepartmentToDto(checkDepartment).Result;
+            var departmentToDto = _toDtos.DepartmentToDto(checkOldDepartment).Result;
 
             return departmentToDto;
         }

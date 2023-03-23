@@ -2,7 +2,6 @@
 using Employees.API.DTOs;
 using Employees.API.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -195,6 +194,7 @@ namespace Employees.API.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken);
 
+            //return Ok(token);
             return Ok(new AuthenticatedResponse()
             {
                 Token = token,
@@ -245,6 +245,7 @@ namespace Employees.API.Controllers
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
+
 
     }
 }

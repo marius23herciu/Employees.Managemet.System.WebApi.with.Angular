@@ -1,13 +1,7 @@
 ﻿using Employees.API.BusinessLayer;
 using Employees.API.BussinesLayer.Employees;
-using Employees.API.Data;
 using Employees.API.DTOs;
-using Employees.API.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 
 namespace Employees.API.Controllers
 {

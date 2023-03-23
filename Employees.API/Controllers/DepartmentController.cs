@@ -1,5 +1,6 @@
 ﻿using Employees.API.BusinessLayer.Departments;
 using Employees.API.Data;
+using Employees.API.DTOs;
 using Employees.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,21 +21,22 @@ namespace Employees.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddDepartment([FromBody] string depName)
+        public async Task<IActionResult> AddDepartment([FromBody] DepartmentDto departmentDto)
         {
-            var department = await _bussinesLayer.AddDepartment(depName);
+            var department = await _bussinesLayer.AddDepartment(departmentDto.Name);
             if (department == null)
             {
-                return BadRequest($"Department {depName} allready exists.");
+                return BadRequest($"Department {departmentDto.Name} allready exists.");
             }
 
             return Ok(department);
         }
 
         [HttpPut]
-        public async Task<IActionResult> ChangeDepartmentsName([FromBody] string oldName, string newName)
+        [Route("{oldName}")]
+        public async Task<IActionResult> ChangeDepartmentsName([FromRoute] string oldName, [FromBody] DepartmentDto departmentDto)
         {
-            var department = await _bussinesLayer.ChangeName(oldName, newName);
+            var department = await _bussinesLayer.ChangeName(oldName, departmentDto.Name);
             if (department == null)
             {
                 return NotFound($"Department {oldName} not found.");
@@ -47,6 +49,18 @@ namespace Employees.API.Controllers
         public async Task<IActionResult> GetDepartments()
         {
             return Ok(await _bussinesLayer.GetDepartments());
+        }
+
+        [HttpGet]
+        [Route("{depName}")]
+        public async Task<IActionResult> GetDepartment([FromRoute] string depName)
+        {
+            var changedDep = await _bussinesLayer.GetDepartment(depName);
+            if (changedDep == null)
+            {
+                return BadRequest();
+            }
+            return Ok(changedDep);
         }
         [HttpGet]
         [Route("get-employees-from-{depName}")]

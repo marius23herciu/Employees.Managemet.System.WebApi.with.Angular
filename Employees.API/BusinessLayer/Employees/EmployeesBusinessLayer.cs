@@ -1,9 +1,7 @@
 ﻿using Employees.API.Data;
 using Employees.API.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Employees.API.DTOs;
-using System.Net;
 using Employees.API.BusinessLayer;
 
 namespace Employees.API.BussinesLayer.Employees
